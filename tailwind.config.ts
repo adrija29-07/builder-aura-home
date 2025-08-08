@@ -65,6 +65,14 @@ export default {
           cream: "#FFF8DC",
           saffron: "#FF8C00",
         },
+        tech: {
+          neon: "#00D4FF",
+          purple: "#8B5CF6",
+          matrix: "#00FF41",
+          cyber: "#FF0080",
+          dark: "#0F0F23",
+          electric: "#7C3AED",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
