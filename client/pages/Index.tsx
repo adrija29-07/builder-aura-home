@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 
 export default function Index() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-tech-dark via-durga-maroon/20 to-tech-purple/30 relative overflow-hidden">
+    <div className="min-h-screen bg-black relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 opacity-20">
         {/* Tech elements */}
