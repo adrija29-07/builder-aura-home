@@ -57,6 +57,14 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        durga: {
+          red: "#E53E3E",
+          gold: "#D69E2E",
+          orange: "#DD6B20",
+          maroon: "#742A2A",
+          cream: "#FFF8DC",
+          saffron: "#FF8C00",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
