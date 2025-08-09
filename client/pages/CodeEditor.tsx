@@ -1000,7 +1000,7 @@ export default function CodeEditor() {
                     size="sm"
                     className={`w-full ${buttonThemeClasses}`}
                     disabled={!code}
-                    aria-label="Copy code to clipboard"
+                    aria-label="Copy code to clipboard or select text for manual copy"
                   >
                     📄 Copy
                   </Button>
