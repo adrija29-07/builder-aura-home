@@ -3,42 +3,65 @@ import { Link } from "react-router-dom";
 
 export default function Index() {
   return (
-    <div className="min-h-screen bg-black relative overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 opacity-20">
-        {/* Tech elements */}
-        <div className="absolute top-20 left-10 w-32 h-32 bg-tech-neon rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute top-40 right-20 w-24 h-24 bg-durga-gold rounded-full blur-2xl animate-pulse delay-500"></div>
-        <div className="absolute bottom-32 left-1/4 w-40 h-40 bg-tech-matrix rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute bottom-20 right-10 w-28 h-28 bg-durga-saffron rounded-full blur-2xl animate-pulse delay-700"></div>
-        <div className="absolute top-1/2 left-1/2 w-36 h-36 bg-tech-electric rounded-full blur-3xl animate-pulse delay-300"></div>
+    <div className="min-h-screen bg-gradient-to-br from-cosmic-void via-cosmic-nebula to-cosmic-stardust relative overflow-hidden">
+      {/* Animated stellar background */}
+      <div className="absolute inset-0 opacity-40">
+        {/* Nebula clouds */}
+        <div className="absolute top-20 left-10 w-96 h-96 bg-cosmic-aurora rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute top-40 right-20 w-72 h-72 bg-cosmic-plasma rounded-full blur-3xl animate-pulse delay-1000"></div>
+        <div className="absolute bottom-32 left-1/4 w-80 h-80 bg-cosmic-starlight rounded-full blur-3xl animate-pulse delay-500"></div>
+        <div className="absolute bottom-20 right-10 w-64 h-64 bg-cosmic-galaxy rounded-full blur-3xl animate-pulse delay-1500"></div>
+        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-cosmic-comet rounded-full blur-3xl animate-pulse delay-700"></div>
+        
+        {/* Additional smaller nebulae */}
+        <div className="absolute top-1/4 right-1/3 w-48 h-48 bg-cosmic-plasma/60 rounded-full blur-2xl animate-pulse delay-300"></div>
+        <div className="absolute bottom-1/3 left-1/6 w-56 h-56 bg-cosmic-aurora/60 rounded-full blur-2xl animate-pulse delay-1200"></div>
       </div>
 
-      {/* Matrix-style code rain effect */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-0 left-1/6 text-tech-matrix text-xs font-mono animate-pulse">
-          {Array.from({ length: 30 }, (_, i) => (
-            <div key={i} className="mb-1">
-              {Math.random().toString(36).substring(2, 15)}
-            </div>
-          ))}
-        </div>
-        <div className="absolute top-0 right-1/6 text-tech-neon text-xs font-mono animate-pulse delay-500">
-          {Array.from({ length: 30 }, (_, i) => (
-            <div key={i} className="mb-1">
-              {Math.random().toString(36).substring(2, 15)}
-            </div>
-          ))}
-        </div>
+      {/* Floating stars */}
+      <div className="absolute inset-0 opacity-80">
+        {Array.from({ length: 50 }, (_, i) => (
+          <div
+            key={i}
+            className="absolute w-1 h-1 bg-cosmic-moon rounded-full animate-pulse"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 3}s`,
+              animationDuration: `${2 + Math.random() * 2}s`
+            }}
+          />
+        ))}
+        
+        {/* Larger stars */}
+        {Array.from({ length: 20 }, (_, i) => (
+          <div
+            key={`star-${i}`}
+            className="absolute w-2 h-2 bg-cosmic-starlight rounded-full animate-pulse"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 4}s`,
+              animationDuration: `${1.5 + Math.random() * 2}s`
+            }}
+          />
+        ))}
       </div>
 
-      {/* Durga Image */}
-      <div className="absolute inset-0 flex items-center justify-center opacity-30">
-        <img
-          src="https://images.pexels.com/photos/33351372/pexels-photo-33351372.jpeg"
-          alt="Goddess Durga"
-          className="h-full max-h-screen object-contain"
-        />
+      {/* Cosmic dust particles */}
+      <div className="absolute inset-0 opacity-30">
+        {Array.from({ length: 30 }, (_, i) => (
+          <div
+            key={`dust-${i}`}
+            className="absolute w-0.5 h-0.5 bg-cosmic-cosmic rounded-full animate-bounce"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${3 + Math.random() * 4}s`
+            }}
+          />
+        ))}
       </div>
 
       {/* Hero Content */}
@@ -46,125 +69,138 @@ export default function Index() {
         <div className="text-center max-w-5xl mx-auto">
           {/* Main Heading */}
           <div className="mb-8">
-            <div className="flex items-center justify-center gap-4 mb-4">
-              <span className="text-4xl">💻</span>
-              <span className="text-4xl">🕉️</span>
-              <span className="text-4xl">⚡</span>
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <span className="text-4xl animate-pulse">🌌</span>
+              <span className="text-4xl animate-pulse delay-500">✨</span>
+              <span className="text-4xl animate-pulse delay-1000">🚀</span>
             </div>
-            <h1 className="text-5xl md:text-7xl font-bold mb-4 leading-tight">
-              <span className="bg-gradient-to-r from-tech-neon via-durga-gold to-tech-matrix bg-clip-text text-transparent">
-                HackPuja
+            <h1 className="text-6xl md:text-8xl font-bold mb-6 leading-tight">
+              <span className="bg-gradient-to-r from-cosmic-starlight via-cosmic-galaxy to-cosmic-cosmic bg-clip-text text-transparent animate-pulse">
+                Cosmic
+              </span>
+              <br />
+              <span className="bg-gradient-to-r from-cosmic-comet via-cosmic-sun to-cosmic-starlight bg-clip-text text-transparent">
+                Explorer
               </span>
             </h1>
-            <h2 className="text-3xl md:text-5xl font-semibold mb-6">
-              <span className="text-tech-electric">Code</span>
-              <span className="text-durga-gold mx-3">×</span>
-              <span className="text-durga-red">Culture</span>
-            </h2>
-            <div className="text-lg md:text-xl text-durga-gold/80 font-mono">
-              where innovation meets tradition
+            <div className="text-xl md:text-2xl text-cosmic-cosmic/90 font-light tracking-wide">
+              Journey Through the Digital Universe
             </div>
           </div>
 
           {/* Subtitle */}
-          <p className="text-xl md:text-2xl text-white/80 mb-8 leading-relaxed max-w-4xl mx-auto">
-            A revolutionary fusion hackathon celebrating the divine power of coding and the sacred traditions of Durga Puja. 
-            Build solutions that honor our heritage while shaping the future.
+          <p className="text-xl md:text-2xl text-cosmic-moon/80 mb-8 leading-relaxed max-w-4xl mx-auto">
+            Embark on an interstellar adventure through code, creativity, and cosmic innovation. 
+            Explore the infinite possibilities of the digital cosmos.
           </p>
 
-          {/* Decorative Divider with tech elements */}
+          {/* Cosmic Divider */}
           <div className="flex items-center justify-center mb-12">
-            <div className="h-1 w-16 bg-gradient-to-r from-tech-neon to-durga-gold rounded-full"></div>
-            <div className="mx-4 w-10 h-10 bg-gradient-to-br from-tech-electric to-durga-red rounded-lg flex items-center justify-center border border-tech-neon/30">
-              <span className="text-white text-sm font-mono">{"<>"}</span>
+            <div className="h-1 w-20 bg-gradient-to-r from-transparent via-cosmic-comet to-transparent rounded-full"></div>
+            <div className="mx-6 relative">
+              <div className="w-12 h-12 bg-gradient-to-br from-cosmic-plasma to-cosmic-aurora rounded-full flex items-center justify-center border-2 border-cosmic-starlight/30">
+                <div className="w-6 h-6 bg-cosmic-sun rounded-full animate-pulse"></div>
+              </div>
+              <div className="absolute -inset-2 bg-cosmic-starlight/20 rounded-full blur-md animate-pulse"></div>
             </div>
-            <div className="h-1 w-16 bg-gradient-to-r from-durga-gold to-tech-matrix rounded-full"></div>
+            <div className="h-1 w-20 bg-gradient-to-r from-transparent via-cosmic-aurora to-transparent rounded-full"></div>
           </div>
 
-          {/* Fusion Features */}
+          {/* Cosmic Features */}
           <div className="grid md:grid-cols-3 gap-8 mb-12">
-            <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-tech-neon/30 hover:border-tech-neon/60 hover:shadow-2xl hover:shadow-tech-neon/20 transition-all duration-300 group">
-              <div className="w-16 h-16 bg-gradient-to-br from-tech-neon to-tech-electric rounded-lg mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <span className="text-white text-2xl">🚀</span>
+            <div className="bg-cosmic-void/60 backdrop-blur-lg rounded-3xl p-8 border border-cosmic-aurora/30 hover:border-cosmic-starlight/60 hover:shadow-2xl hover:shadow-cosmic-aurora/20 transition-all duration-500 group relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-cosmic-aurora/10 to-cosmic-plasma/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative z-10">
+                <div className="w-20 h-20 bg-gradient-to-br from-cosmic-starlight to-cosmic-galaxy rounded-2xl mx-auto mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-cosmic-aurora/30">
+                  <span className="text-white text-3xl">🌟</span>
+                </div>
+                <h3 className="text-2xl font-semibold text-cosmic-moon mb-4">Stellar Innovation</h3>
+                <p className="text-cosmic-cosmic/80 leading-relaxed">Harness the power of cosmic creativity to build extraordinary digital experiences</p>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Innovation Seva</h3>
-              <p className="text-white/70">Build tech solutions with the spirit of selfless service</p>
-              <div className="mt-2 text-xs font-mono text-tech-matrix">// code for good</div>
             </div>
 
-            <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-durga-gold/30 hover:border-durga-gold/60 hover:shadow-2xl hover:shadow-durga-gold/20 transition-all duration-300 group">
-              <div className="w-16 h-16 bg-gradient-to-br from-durga-gold to-durga-saffron rounded-lg mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <span className="text-white text-2xl">🎭</span>
+            <div className="bg-cosmic-void/60 backdrop-blur-lg rounded-3xl p-8 border border-cosmic-plasma/30 hover:border-cosmic-galaxy/60 hover:shadow-2xl hover:shadow-cosmic-plasma/20 transition-all duration-500 group relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-cosmic-plasma/10 to-cosmic-galaxy/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative z-10">
+                <div className="w-20 h-20 bg-gradient-to-br from-cosmic-galaxy to-cosmic-cosmic rounded-2xl mx-auto mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-cosmic-plasma/30">
+                  <span className="text-white text-3xl">🛸</span>
+                </div>
+                <h3 className="text-2xl font-semibold text-cosmic-moon mb-4">Galactic Tools</h3>
+                <p className="text-cosmic-cosmic/80 leading-relaxed">Advanced development environments designed for interstellar collaboration</p>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Cultural Tech</h3>
-              <p className="text-white/70">Preserve and digitize our rich heritage through code</p>
-              <div className="mt-2 text-xs font-mono text-durga-gold">// tradition++</div>
             </div>
 
-            <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 border border-tech-matrix/30 hover:border-tech-matrix/60 hover:shadow-2xl hover:shadow-tech-matrix/20 transition-all duration-300 group">
-              <div className="w-16 h-16 bg-gradient-to-br from-tech-matrix to-durga-orange rounded-lg mx-auto mb-4 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <span className="text-white text-2xl">⚡</span>
+            <div className="bg-cosmic-void/60 backdrop-blur-lg rounded-3xl p-8 border border-cosmic-comet/30 hover:border-cosmic-sun/60 hover:shadow-2xl hover:shadow-cosmic-comet/20 transition-all duration-500 group relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-cosmic-comet/10 to-cosmic-sun/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative z-10">
+                <div className="w-20 h-20 bg-gradient-to-br from-cosmic-comet to-cosmic-sun rounded-2xl mx-auto mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-cosmic-comet/30">
+                  <span className="text-white text-3xl">🌠</span>
+                </div>
+                <h3 className="text-2xl font-semibold text-cosmic-moon mb-4">Cosmic Exploration</h3>
+                <p className="text-cosmic-cosmic/80 leading-relaxed">Journey through infinite possibilities with cutting-edge technology</p>
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Divine Debug</h3>
-              <p className="text-white/70">Collaborative coding sessions blessed by collective wisdom</p>
-              <div className="mt-2 text-xs font-mono text-tech-matrix">// debug.blessed()</div>
             </div>
           </div>
 
           {/* Call to Action */}
-          <div className="space-y-4 sm:space-y-0 sm:space-x-4 sm:flex justify-center">
+          <div className="space-y-4 sm:space-y-0 sm:space-x-6 sm:flex justify-center">
             <Link to="/editor">
-              <Button className="bg-gradient-to-r from-tech-neon to-tech-electric hover:from-tech-neon/90 hover:to-tech-electric/90 text-white font-semibold py-3 px-8 rounded-full text-lg shadow-lg hover:shadow-tech-neon/50 transition-all duration-300 border border-tech-neon/30">
-                <span className="mr-2">💻</span>
-                Try Code Editor
+              <Button className="bg-gradient-to-r from-cosmic-plasma to-cosmic-aurora hover:from-cosmic-starlight hover:to-cosmic-galaxy text-white font-semibold py-4 px-10 rounded-full text-lg shadow-2xl shadow-cosmic-plasma/50 hover:shadow-cosmic-aurora/60 transition-all duration-500 border border-cosmic-starlight/30 backdrop-blur-sm group">
+                <span className="mr-3 group-hover:animate-bounce">🚀</span>
+                Launch Explorer
               </Button>
             </Link>
-            <Button
-              variant="outline"
-              className="border-2 border-durga-gold text-durga-gold hover:bg-durga-gold/10 hover:border-durga-gold/80 font-semibold py-3 px-8 rounded-full text-lg backdrop-blur-sm"
+            <Button 
+              variant="outline" 
+              className="border-2 border-cosmic-comet/60 text-cosmic-comet hover:bg-cosmic-comet/10 hover:border-cosmic-comet hover:text-cosmic-sun font-semibold py-4 px-10 rounded-full text-lg backdrop-blur-sm transition-all duration-300 shadow-lg shadow-cosmic-comet/20"
             >
-              <span className="mr-2">🕉️</span>
-              Learn About Fusion
+              <span className="mr-3">🌌</span>
+              Discover Universe
             </Button>
           </div>
 
-          {/* Event Stats */}
-          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="text-center">
-              <div className="text-2xl md:text-3xl font-bold text-tech-neon">24</div>
-              <div className="text-white/60 text-sm font-mono">Hours Coding</div>
+          {/* Cosmic Stats */}
+          <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="text-center group">
+              <div className="text-3xl md:text-4xl font-bold text-cosmic-starlight mb-2 group-hover:text-cosmic-galaxy transition-colors">∞</div>
+              <div className="text-cosmic-cosmic/70 text-sm tracking-wide">Galaxies</div>
             </div>
-            <div className="text-center">
-              <div className="text-2xl md:text-3xl font-bold text-durga-gold">5</div>
-              <div className="text-white/60 text-sm font-mono">Days Festival</div>
+            <div className="text-center group">
+              <div className="text-3xl md:text-4xl font-bold text-cosmic-aurora mb-2 group-hover:text-cosmic-plasma transition-colors">42</div>
+              <div className="text-cosmic-cosmic/70 text-sm tracking-wide">Light Years</div>
             </div>
-            <div className="text-center">
-              <div className="text-2xl md:text-3xl font-bold text-tech-matrix">∞</div>
-              <div className="text-white/60 text-sm font-mono">Possibilities</div>
+            <div className="text-center group">
+              <div className="text-3xl md:text-4xl font-bold text-cosmic-comet mb-2 group-hover:text-cosmic-sun transition-colors">7.8B</div>
+              <div className="text-cosmic-cosmic/70 text-sm tracking-wide">Star Systems</div>
             </div>
-            <div className="text-center">
-              <div className="text-2xl md:text-3xl font-bold text-durga-red">1</div>
-              <div className="text-white/60 text-sm font-mono">Divine Mission</div>
+            <div className="text-center group">
+              <div className="text-3xl md:text-4xl font-bold text-cosmic-galaxy mb-2 group-hover:text-cosmic-cosmic transition-colors">1</div>
+              <div className="text-cosmic-cosmic/70 text-sm tracking-wide">Universe</div>
             </div>
           </div>
         </div>
 
-        {/* Bottom decorative elements */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-tech-dark/60 to-transparent"></div>
+        {/* Bottom cosmic glow */}
+        <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-cosmic-nebula/30 to-transparent"></div>
       </div>
 
-      {/* Floating tech elements */}
-      <div className="absolute top-1/4 left-8 animate-bounce">
-        <div className="w-3 h-3 bg-tech-neon rounded-full"></div>
+      {/* Floating cosmic elements */}
+      <div className="absolute top-1/4 left-8 animate-float">
+        <div className="w-4 h-4 bg-cosmic-starlight rounded-full shadow-lg shadow-cosmic-starlight/50"></div>
       </div>
-      <div className="absolute top-1/3 right-12 animate-bounce delay-1000">
-        <div className="w-2 h-2 bg-durga-gold rounded-full"></div>
+      <div className="absolute top-1/3 right-12 animate-float" style={{ animationDelay: '2s' }}>
+        <div className="w-3 h-3 bg-cosmic-comet rounded-full shadow-lg shadow-cosmic-comet/50"></div>
       </div>
-      <div className="absolute bottom-1/4 left-1/3 animate-bounce delay-500">
-        <div className="w-4 h-4 bg-tech-matrix rounded-full"></div>
+      <div className="absolute bottom-1/4 left-1/3 animate-float" style={{ animationDelay: '1s' }}>
+        <div className="w-5 h-5 bg-cosmic-aurora rounded-full shadow-lg shadow-cosmic-aurora/50"></div>
       </div>
       <div className="absolute bottom-1/4 right-1/4 animate-pulse">
-        <div className="text-tech-electric text-xs font-mono opacity-60">{"{ }"}</div>
+        <div className="text-cosmic-galaxy text-sm opacity-60">✨</div>
+      </div>
+
+      {/* Shooting star */}
+      <div className="absolute top-1/4 left-0 w-full h-1">
+        <div className="w-20 h-0.5 bg-gradient-to-r from-transparent via-cosmic-sun to-transparent animate-pulse opacity-60"></div>
       </div>
     </div>
   );
