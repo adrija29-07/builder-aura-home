@@ -399,6 +399,16 @@ export default function CodeEditor() {
         e.preventDefault();
         toggleListening();
       }
+      // Alt + E to explain code
+      if (e.altKey && e.key === 'e') {
+        e.preventDefault();
+        explainCode();
+      }
+      // Alt + C to check errors
+      if (e.altKey && e.key === 'c') {
+        e.preventDefault();
+        checkErrors();
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -450,15 +460,18 @@ export default function CodeEditor() {
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragOver(false);
-    
+
     const files = e.dataTransfer.files;
     if (files.length > 0) {
       const file = files[0];
+      const detectedLanguage = detectLanguage(file.name);
+      setLanguage(detectedLanguage);
+
       const reader = new FileReader();
       reader.onload = (e) => {
         const content = e.target?.result as string;
         setCode(content);
-        speak(`File ${file.name} loaded successfully via drag and drop. ${content.split('\n').length} lines of code.`);
+        speak(`File ${file.name} loaded successfully via drag and drop as ${detectedLanguage}. ${content.split('\n').length} lines of code.`);
       };
       reader.readAsText(file);
     }
@@ -554,22 +567,22 @@ export default function CodeEditor() {
             </Button>
             <Button
               onClick={explainCode}
-              disabled={!code.trim()}
+              disabled={!code.trim() || isAnalyzing}
               className={`${buttonThemeClasses}`}
               aria-label="Explain code structure"
             >
-              💡 Explain
+              💡 {isAnalyzing ? 'Analyzing...' : 'Explain'}
             </Button>
           </div>
 
           <div className="grid md:grid-cols-3 gap-4">
             <Button
               onClick={checkErrors}
-              disabled={!code.trim()}
+              disabled={!code.trim() || isAnalyzing}
               className={`${buttonThemeClasses}`}
               aria-label="Check for syntax errors"
             >
-              🔍 Check Errors
+              🔍 {isAnalyzing ? 'Checking...' : 'Check Errors'}
             </Button>
             <Button
               onClick={toggleListening}
@@ -665,11 +678,36 @@ export default function CodeEditor() {
           </div>
         </Card>
 
-        {/* Accessibility Controls */}
+        {/* Code Language Selection */}
         <Card className={`p-6 mb-6 ${themeClasses}`}>
           <h2 className={`text-xl font-semibold mb-4 ${highContrast ? 'text-yellow-300' : 'text-gray-900'}`}>
-            Accessibility Settings
+            Code Settings
           </h2>
+          <div className="mb-6">
+            <Label className={`block mb-2 ${highContrast ? 'text-yellow-200' : 'text-gray-700'}`}>
+              Programming Language
+            </Label>
+            <Select value={language} onValueChange={setLanguage}>
+              <SelectTrigger className={`w-64 ${themeClasses}`}>
+                <SelectValue placeholder="Select language" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="javascript">JavaScript</SelectItem>
+                <SelectItem value="typescript">TypeScript</SelectItem>
+                <SelectItem value="python">Python</SelectItem>
+                <SelectItem value="html">HTML</SelectItem>
+                <SelectItem value="css">CSS</SelectItem>
+                <SelectItem value="json">JSON</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className={`text-xs mt-1 ${highContrast ? 'text-yellow-100' : 'text-gray-500'}`}>
+              Language is auto-detected from file extensions, but you can override it here
+            </p>
+          </div>
+
+          <h3 className={`text-lg font-semibold mb-4 ${highContrast ? 'text-yellow-300' : 'text-gray-900'}`}>
+            Accessibility Settings
+          </h3>
           <div className="flex flex-wrap gap-4 items-center">
             <div className="flex items-center gap-2">
               <Label htmlFor="font-size" className={highContrast ? 'text-yellow-200' : 'text-gray-700'}>
@@ -721,6 +759,8 @@ export default function CodeEditor() {
               <div>• <kbd className="px-1 py-0.5 bg-gray-200 rounded text-black text-xs">Alt + V</kbd> Toggle voice commands</div>
               <div>• <kbd className="px-1 py-0.5 bg-gray-200 rounded text-black text-xs">Alt + F</kbd> Focus code editor</div>
               <div>• <kbd className="px-1 py-0.5 bg-gray-200 rounded text-black text-xs">Alt + H</kbd> Toggle high contrast</div>
+              <div>• <kbd className="px-1 py-0.5 bg-gray-200 rounded text-black text-xs">Alt + E</kbd> Explain code</div>
+              <div>• <kbd className="px-1 py-0.5 bg-gray-200 rounded text-black text-xs">Alt + C</kbd> Check errors</div>
             </div>
           </details>
         </Card>
