@@ -34,6 +34,8 @@ export default function CodeEditor() {
   const [codeAnalysis, setCodeAnalysis] = useState<CodeAnalysisResponse | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [language, setLanguage] = useState("javascript");
+  const [isDictating, setIsDictating] = useState(false);
+  const [dictationText, setDictationText] = useState("");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -63,22 +65,32 @@ export default function CodeEditor() {
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       const recognition = new SpeechRecognition();
-      
+
       recognition.continuous = true;
       recognition.interimResults = true;
       recognition.lang = 'en-US';
 
       recognition.onresult = (event) => {
         let finalTranscript = '';
-        
+        let interimTranscript = '';
+
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const transcript = event.results[i][0].transcript;
           if (event.results[i].isFinal) {
             finalTranscript += transcript;
+          } else {
+            interimTranscript += transcript;
           }
         }
 
-        if (finalTranscript) {
+        if (isDictating) {
+          // Handle dictation mode
+          setDictationText(interimTranscript);
+          if (finalTranscript) {
+            handleDictation(finalTranscript);
+          }
+        } else if (finalTranscript) {
+          // Handle voice commands
           handleVoiceCommand(finalTranscript.toLowerCase().trim());
         }
       };
@@ -86,10 +98,13 @@ export default function CodeEditor() {
       recognition.onerror = (event) => {
         console.error('Speech recognition error:', event.error);
         setIsListening(false);
+        setIsDictating(false);
       };
 
       recognition.onend = () => {
         setIsListening(false);
+        setIsDictating(false);
+        setDictationText('');
       };
 
       recognitionRef.current = recognition;
@@ -100,13 +115,58 @@ export default function CodeEditor() {
         recognitionRef.current.stop();
       }
     };
-  }, []);
+  }, [isDictating]);
+
+  // Handle voice dictation
+  const handleDictation = (transcript: string) => {
+    let processedText = transcript;
+
+    // Convert speech to code-friendly format
+    processedText = processedText
+      .replace(/\bopen paren\b/g, '(')
+      .replace(/\bclose paren\b/g, ')')
+      .replace(/\bopen bracket\b/g, '[')
+      .replace(/\bclose bracket\b/g, ']')
+      .replace(/\bopen brace\b/g, '{')
+      .replace(/\bclose brace\b/g, '}')
+      .replace(/\bsemicolon\b/g, ';')
+      .replace(/\bcomma\b/g, ',')
+      .replace(/\bdot\b/g, '.')
+      .replace(/\bequals\b/g, '=')
+      .replace(/\bplus\b/g, '+')
+      .replace(/\bminus\b/g, '-')
+      .replace(/\basterisk\b/g, '*')
+      .replace(/\bslash\b/g, '/')
+      .replace(/\bless than\b/g, '<')
+      .replace(/\bgreater than\b/g, '>')
+      .replace(/\bquote\b/g, '"')
+      .replace(/\bsingle quote\b/g, "'")
+      .replace(/\bnew line\b/g, '\n')
+      .replace(/\btab\b/g, '\t')
+      .replace(/\bfunction\b/g, 'function')
+      .replace(/\bconst\b/g, 'const')
+      .replace(/\blet\b/g, 'let')
+      .replace(/\bvar\b/g, 'var')
+      .replace(/\bif\b/g, 'if')
+      .replace(/\belse\b/g, 'else')
+      .replace(/\bfor\b/g, 'for')
+      .replace(/\bwhile\b/g, 'while')
+      .replace(/\breturn\b/g, 'return');
+
+    // Add the processed text to the code
+    setCode(prev => prev + processedText + ' ');
+    setDictationText('');
+  };
 
   // Handle voice commands
   const handleVoiceCommand = (command: string) => {
     console.log('Voice command:', command);
-    
-    if (command.includes('read code') || command.includes('start reading')) {
+
+    if (command.includes('start dictation') || command.includes('begin dictation')) {
+      startDictation();
+    } else if (command.includes('stop dictation') || command.includes('end dictation')) {
+      stopDictation();
+    } else if (command.includes('read code') || command.includes('start reading')) {
       readCode();
     } else if (command.includes('stop reading') || command.includes('stop')) {
       stopReading();
@@ -344,9 +404,34 @@ export default function CodeEditor() {
     if (isListening) {
       recognitionRef.current?.stop();
       setIsListening(false);
+      setIsDictating(false);
     } else {
       recognitionRef.current?.start();
       setIsListening(true);
+    }
+  };
+
+  // Voice dictation controls
+  const startDictation = () => {
+    if (!isListening) {
+      recognitionRef.current?.start();
+      setIsListening(true);
+    }
+    setIsDictating(true);
+    speak("Dictation mode started. Speak your code and I'll convert it to text.");
+  };
+
+  const stopDictation = () => {
+    setIsDictating(false);
+    setDictationText('');
+    speak("Dictation mode stopped.");
+  };
+
+  const toggleDictation = () => {
+    if (isDictating) {
+      stopDictation();
+    } else {
+      startDictation();
     }
   };
 
@@ -408,6 +493,11 @@ export default function CodeEditor() {
       if (e.altKey && e.key === 'c') {
         e.preventDefault();
         checkErrors();
+      }
+      // Alt + D to toggle dictation
+      if (e.altKey && e.key === 'd') {
+        e.preventDefault();
+        toggleDictation();
       }
     };
 
@@ -586,10 +676,17 @@ export default function CodeEditor() {
             </Button>
             <Button
               onClick={toggleListening}
-              className={`${buttonThemeClasses} ${isListening ? 'bg-red-500 text-white' : ''}`}
-              aria-label={`${isListening ? 'Stop' : 'Start'} voice commands`}
+              className={`${buttonThemeClasses} ${isListening && !isDictating ? 'bg-red-500 text-white' : ''}`}
+              aria-label={`${isListening && !isDictating ? 'Stop' : 'Start'} voice commands`}
             >
-              🎤 {isListening ? 'Stop Listening' : 'Voice Commands'}
+              🎤 {isListening && !isDictating ? 'Stop Listening' : 'Voice Commands'}
+            </Button>
+            <Button
+              onClick={toggleDictation}
+              className={`${buttonThemeClasses} ${isDictating ? 'bg-blue-500 text-white' : ''}`}
+              aria-label={`${isDictating ? 'Stop' : 'Start'} voice dictation`}
+            >
+              ✍️ {isDictating ? 'Stop Dictation' : 'Voice Dictation'}
             </Button>
             <Button
               onClick={repeatLastSpoken}
@@ -601,11 +698,24 @@ export default function CodeEditor() {
             </Button>
           </div>
 
-          {isListening && (
+          {isListening && !isDictating && (
             <div className={`mt-4 p-3 rounded border ${highContrast ? 'bg-yellow-900 border-yellow-500' : 'bg-blue-50 border-blue-200'}`}>
               <p className={`text-sm ${highContrast ? 'text-yellow-200' : 'text-blue-700'}`}>
-                🎤 Listening for voice commands... Try saying: "read code", "stop reading", "explain code", "check errors"
+                🎤 Listening for voice commands... Try saying: "read code", "stop reading", "explain code", "check errors", "start dictation"
               </p>
+            </div>
+          )}
+
+          {isDictating && (
+            <div className={`mt-4 p-3 rounded border ${highContrast ? 'bg-blue-900 border-blue-500' : 'bg-green-50 border-green-200'}`}>
+              <p className={`text-sm ${highContrast ? 'text-blue-200' : 'text-green-700'}`}>
+                ✍️ Dictation mode active... Speak your code. Say "stop dictation" when finished.
+              </p>
+              {dictationText && (
+                <p className={`text-xs mt-2 font-mono ${highContrast ? 'text-blue-100' : 'text-green-600'}`}>
+                  Preview: {dictationText}
+                </p>
+              )}
             </div>
           )}
         </Card>
@@ -761,6 +871,7 @@ export default function CodeEditor() {
               <div>• <kbd className="px-1 py-0.5 bg-gray-200 rounded text-black text-xs">Alt + H</kbd> Toggle high contrast</div>
               <div>• <kbd className="px-1 py-0.5 bg-gray-200 rounded text-black text-xs">Alt + E</kbd> Explain code</div>
               <div>• <kbd className="px-1 py-0.5 bg-gray-200 rounded text-black text-xs">Alt + C</kbd> Check errors</div>
+              <div>• <kbd className="px-1 py-0.5 bg-gray-200 rounded text-black text-xs">Alt + D</kbd> Toggle dictation</div>
             </div>
           </details>
         </Card>
