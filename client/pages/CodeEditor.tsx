@@ -587,12 +587,56 @@ export default function CodeEditor() {
   };
 
   const copyToClipboard = async () => {
+    if (!code.trim()) {
+      speak("No code to copy.");
+      return;
+    }
+
     try {
-      await navigator.clipboard.writeText(code);
-      speak("Code copied to clipboard.");
+      // Method 1: Modern Clipboard API (if available and allowed)
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(code);
+        speak("Code copied to clipboard using modern API.");
+        return;
+      }
+
+      // Method 2: Fallback to execCommand (deprecated but still works)
+      const textArea = document.createElement('textarea');
+      textArea.value = code;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-9999px';
+      textArea.style.top = '-9999px';
+      document.body.appendChild(textArea);
+
+      textArea.select();
+      textArea.setSelectionRange(0, 99999); // For mobile devices
+
+      const successful = document.execCommand('copy');
+      document.body.removeChild(textArea);
+
+      if (successful) {
+        speak("Code copied to clipboard using fallback method.");
+        return;
+      } else {
+        throw new Error('execCommand failed');
+      }
     } catch (err) {
       console.error('Failed to copy to clipboard: ', err);
-      speak("Failed to copy to clipboard. Please try again.");
+
+      // Method 3: Final fallback - select the text in the textarea for manual copy
+      try {
+        if (textareaRef.current) {
+          textareaRef.current.select();
+          textareaRef.current.setSelectionRange(0, 99999);
+          speak("Code selected in editor. Press Ctrl+C or Cmd+C to copy manually.");
+          return;
+        }
+      } catch (selectErr) {
+        console.error('Failed to select text: ', selectErr);
+      }
+
+      // Last resort: inform user about manual copy
+      speak("Clipboard access is restricted. Please select all text manually with Ctrl+A and copy with Ctrl+C.");
     }
   };
 
