@@ -405,14 +405,33 @@ export default function CodeEditor() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isPaused]);
 
+  // Auto-detect language from file extension
+  const detectLanguage = (filename: string): string => {
+    const ext = filename.split('.').pop()?.toLowerCase();
+    switch (ext) {
+      case 'js': return 'javascript';
+      case 'jsx': return 'javascript';
+      case 'ts': return 'typescript';
+      case 'tsx': return 'typescript';
+      case 'py': return 'python';
+      case 'html': return 'html';
+      case 'css': return 'css';
+      case 'json': return 'json';
+      default: return 'javascript';
+    }
+  };
+
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+      const detectedLanguage = detectLanguage(file.name);
+      setLanguage(detectedLanguage);
+
       const reader = new FileReader();
       reader.onload = (e) => {
         const content = e.target?.result as string;
         setCode(content);
-        speak(`File ${file.name} loaded successfully. ${content.split('\n').length} lines of code.`);
+        speak(`File ${file.name} loaded successfully as ${detectedLanguage}. ${content.split('\n').length} lines of code.`);
       };
       reader.readAsText(file);
     }
