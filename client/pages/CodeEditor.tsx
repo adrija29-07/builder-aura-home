@@ -904,7 +904,7 @@ export default function CodeEditor() {
           {code && (
             <Card className={`p-4 mt-6 ${themeClasses}`}>
               <h3 className={`font-semibold mb-2 ${highContrast ? 'text-yellow-300' : 'text-gray-900'}`}>
-                Code Analysis
+                Basic Code Analysis
               </h3>
               <div className={`grid grid-cols-2 md:grid-cols-4 gap-4 text-sm ${highContrast ? 'text-yellow-200' : 'text-gray-600'}`}>
                 <div>
@@ -929,6 +929,163 @@ export default function CodeEditor() {
               >
                 🔊 Read Analysis
               </Button>
+            </Card>
+          )}
+
+          {/* Detailed Code Analysis Section */}
+          {codeAnalysis && (
+            <Card className={`p-6 mt-6 ${themeClasses}`}>
+              <h3 className={`text-xl font-semibold mb-4 ${highContrast ? 'text-yellow-300' : 'text-gray-900'}`}>
+                Detailed Code Analysis
+              </h3>
+
+              {/* Summary */}
+              <div className="mb-6">
+                <h4 className={`font-semibold mb-2 ${highContrast ? 'text-yellow-200' : 'text-gray-700'}`}>
+                  Summary
+                </h4>
+                <p className={`mb-2 ${highContrast ? 'text-yellow-100' : 'text-gray-600'}`}>
+                  {codeAnalysis.readableExplanation}
+                </p>
+                <div className={`grid grid-cols-2 md:grid-cols-4 gap-4 text-sm ${highContrast ? 'text-yellow-200' : 'text-gray-600'}`}>
+                  <div><span className="font-medium">Code Lines:</span> {codeAnalysis.summary.codeLines}</div>
+                  <div><span className="font-medium">Comments:</span> {codeAnalysis.summary.commentLines}</div>
+                  <div><span className="font-medium">Blank Lines:</span> {codeAnalysis.summary.blankLines}</div>
+                  <div><span className="font-medium">Complexity:</span> <span className={`capitalize ${codeAnalysis.summary.complexity === 'high' ? 'text-red-500' : codeAnalysis.summary.complexity === 'medium' ? 'text-yellow-500' : 'text-green-500'}`}>{codeAnalysis.summary.complexity}</span></div>
+                </div>
+              </div>
+
+              {/* Code Structure */}
+              <div className="grid md:grid-cols-2 gap-6 mb-6">
+                {/* Functions */}
+                {codeAnalysis.structure.functions.length > 0 && (
+                  <div>
+                    <h4 className={`font-semibold mb-2 ${highContrast ? 'text-yellow-200' : 'text-gray-700'}`}>
+                      Functions ({codeAnalysis.structure.functions.length})
+                    </h4>
+                    <div className={`space-y-1 text-sm ${highContrast ? 'text-yellow-100' : 'text-gray-600'}`}>
+                      {codeAnalysis.structure.functions.slice(0, 5).map((func, index) => (
+                        <div key={index}>
+                          <span className="font-mono">{func.name}</span> (line {func.line}, {func.type})
+                        </div>
+                      ))}
+                      {codeAnalysis.structure.functions.length > 5 && (
+                        <div>...and {codeAnalysis.structure.functions.length - 5} more</div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Variables */}
+                {codeAnalysis.structure.variables.length > 0 && (
+                  <div>
+                    <h4 className={`font-semibold mb-2 ${highContrast ? 'text-yellow-200' : 'text-gray-700'}`}>
+                      Variables ({codeAnalysis.structure.variables.length})
+                    </h4>
+                    <div className={`space-y-1 text-sm ${highContrast ? 'text-yellow-100' : 'text-gray-600'}`}>
+                      {codeAnalysis.structure.variables.slice(0, 5).map((variable, index) => (
+                        <div key={index}>
+                          <span className="font-mono">{variable.name}</span> (line {variable.line}, {variable.type})
+                        </div>
+                      ))}
+                      {codeAnalysis.structure.variables.length > 5 && (
+                        <div>...and {codeAnalysis.structure.variables.length - 5} more</div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Loops & Conditionals */}
+                {(codeAnalysis.structure.loops.length > 0 || codeAnalysis.structure.conditionals.length > 0) && (
+                  <div>
+                    <h4 className={`font-semibold mb-2 ${highContrast ? 'text-yellow-200' : 'text-gray-700'}`}>
+                      Control Flow
+                    </h4>
+                    <div className={`space-y-1 text-sm ${highContrast ? 'text-yellow-100' : 'text-gray-600'}`}>
+                      {codeAnalysis.structure.loops.map((loop, index) => (
+                        <div key={`loop-${index}`}>
+                          {loop.type} loop (line {loop.line})
+                        </div>
+                      ))}
+                      {codeAnalysis.structure.conditionals.map((cond, index) => (
+                        <div key={`cond-${index}`}>
+                          {cond.type} statement (line {cond.line})
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Imports */}
+                {codeAnalysis.structure.imports.length > 0 && (
+                  <div>
+                    <h4 className={`font-semibold mb-2 ${highContrast ? 'text-yellow-200' : 'text-gray-700'}`}>
+                      Imports ({codeAnalysis.structure.imports.length})
+                    </h4>
+                    <div className={`space-y-1 text-sm ${highContrast ? 'text-yellow-100' : 'text-gray-600'}`}>
+                      {codeAnalysis.structure.imports.slice(0, 3).map((imp, index) => (
+                        <div key={index}>
+                          <span className="font-mono">{imp.module}</span> (line {imp.line})
+                        </div>
+                      ))}
+                      {codeAnalysis.structure.imports.length > 3 && (
+                        <div>...and {codeAnalysis.structure.imports.length - 3} more</div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Errors */}
+              {codeAnalysis.errors.length > 0 && (
+                <div className="mb-6">
+                  <h4 className={`font-semibold mb-2 text-red-600`}>
+                    Issues Found ({codeAnalysis.errors.length})
+                  </h4>
+                  <div className="space-y-2">
+                    {codeAnalysis.errors.slice(0, 5).map((error, index) => (
+                      <div key={index} className={`p-2 rounded border-l-4 border-red-500 ${highContrast ? 'bg-red-900/20' : 'bg-red-50'}`}>
+                        <div className="text-sm">
+                          <span className="font-medium">Line {error.line}:</span> {error.message}
+                          <span className={`ml-2 text-xs px-2 py-1 rounded ${highContrast ? 'bg-red-800' : 'bg-red-100'}`}>
+                            {error.type}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                    {codeAnalysis.errors.length > 5 && (
+                      <div className="text-sm text-gray-500">...and {codeAnalysis.errors.length - 5} more issues</div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Actions */}
+              <div className="flex gap-4">
+                <Button
+                  onClick={() => speak(codeAnalysis.readableExplanation)}
+                  variant="outline"
+                  className={buttonThemeClasses}
+                  aria-label="Read detailed analysis aloud"
+                >
+                  🔊 Read Full Analysis
+                </Button>
+                {codeAnalysis.errors.length > 0 && (
+                  <Button
+                    onClick={() => {
+                      const errorSummary = codeAnalysis.errors.slice(0, 3).map(e =>
+                        `Line ${e.line}: ${e.message}`
+                      ).join('. ');
+                      speak(`Found ${codeAnalysis.errors.length} issues. ${errorSummary}`);
+                    }}
+                    variant="outline"
+                    className={buttonThemeClasses}
+                    aria-label="Read errors aloud"
+                  >
+                    🚨 Read Errors
+                  </Button>
+                )}
+              </div>
             </Card>
           )}
         </main>
