@@ -1,206 +1,302 @@
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 export default function Index() {
+  const [highContrast, setHighContrast] = useState(false);
+  const [fontSize, setFontSize] = useState(18);
+
+  // Load saved preferences
+  useEffect(() => {
+    const savedContrast = localStorage.getItem('highContrast') === 'true';
+    const savedFontSize = parseInt(localStorage.getItem('fontSize') || '18');
+    setHighContrast(savedContrast);
+    setFontSize(savedFontSize);
+  }, []);
+
+  // Save preferences
+  useEffect(() => {
+    localStorage.setItem('highContrast', highContrast.toString());
+    localStorage.setItem('fontSize', fontSize.toString());
+  }, [highContrast, fontSize]);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ctrl/Cmd + = to increase font size
+      if ((e.ctrlKey || e.metaKey) && e.key === '=') {
+        e.preventDefault();
+        setFontSize(prev => Math.min(prev + 2, 32));
+      }
+      // Ctrl/Cmd + - to decrease font size
+      if ((e.ctrlKey || e.metaKey) && e.key === '-') {
+        e.preventDefault();
+        setFontSize(prev => Math.max(prev - 2, 14));
+      }
+      // Alt + H to toggle high contrast
+      if (e.altKey && e.key === 'h') {
+        e.preventDefault();
+        setHighContrast(prev => !prev);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const themeClasses = highContrast 
+    ? "bg-black text-yellow-300" 
+    : "bg-gray-50 text-gray-900";
+
+  const cardThemeClasses = highContrast
+    ? "bg-gray-900 text-yellow-300 border-yellow-500"
+    : "bg-white text-gray-900 border-gray-200";
+
+  const buttonThemeClasses = highContrast
+    ? "bg-yellow-400 text-black hover:bg-yellow-300 border-yellow-400"
+    : "";
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cosmic-void via-cosmic-nebula to-cosmic-stardust relative overflow-hidden">
-      {/* Animated stellar background */}
-      <div className="absolute inset-0 opacity-40">
-        {/* Nebula clouds */}
-        <div className="absolute top-20 left-10 w-96 h-96 bg-cosmic-aurora rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute top-40 right-20 w-72 h-72 bg-cosmic-plasma rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute bottom-32 left-1/4 w-80 h-80 bg-cosmic-starlight rounded-full blur-3xl animate-pulse delay-500"></div>
-        <div className="absolute bottom-20 right-10 w-64 h-64 bg-cosmic-galaxy rounded-full blur-3xl animate-pulse delay-1500"></div>
-        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-cosmic-comet rounded-full blur-3xl animate-pulse delay-700"></div>
-        
-        {/* Additional smaller nebulae */}
-        <div className="absolute top-1/4 right-1/3 w-48 h-48 bg-cosmic-plasma/60 rounded-full blur-2xl animate-pulse delay-300"></div>
-        <div className="absolute bottom-1/3 left-1/6 w-56 h-56 bg-cosmic-aurora/60 rounded-full blur-2xl animate-pulse delay-1200"></div>
-      </div>
+    <div className={`min-h-screen transition-colors ${themeClasses}`} style={{ fontSize: `${fontSize}px` }}>
+      {/* Skip to main content link for screen readers */}
+      <a 
+        href="#main-content" 
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-blue-600 text-white px-4 py-2 rounded z-50 text-base"
+      >
+        Skip to main content
+      </a>
 
-      {/* Floating stars */}
-      <div className="absolute inset-0 opacity-80">
-        {Array.from({ length: 50 }, (_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 bg-cosmic-moon rounded-full animate-pulse"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${2 + Math.random() * 2}s`
-            }}
-          />
-        ))}
-        
-        {/* Larger stars */}
-        {Array.from({ length: 20 }, (_, i) => (
-          <div
-            key={`star-${i}`}
-            className="absolute w-2 h-2 bg-cosmic-starlight rounded-full animate-pulse"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 4}s`,
-              animationDuration: `${1.5 + Math.random() * 2}s`
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Cosmic dust particles */}
-      <div className="absolute inset-0 opacity-30">
-        {Array.from({ length: 30 }, (_, i) => (
-          <div
-            key={`dust-${i}`}
-            className="absolute w-0.5 h-0.5 bg-cosmic-cosmic rounded-full animate-bounce"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${3 + Math.random() * 4}s`
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Hero Content */}
-      <div className="relative z-10 container mx-auto px-4 py-20">
-        <div className="text-center max-w-5xl mx-auto">
-          {/* Main Heading */}
-          <div className="mb-8">
-            <div className="flex items-center justify-center gap-4 mb-6">
-              <span className="text-4xl animate-pulse">🌌</span>
-              <span className="text-4xl animate-pulse delay-500">✨</span>
-              <span className="text-4xl animate-pulse delay-1000">🚀</span>
-            </div>
-            <h1 className="text-6xl md:text-8xl font-bold mb-6 leading-tight">
-              <span className="bg-gradient-to-r from-cosmic-starlight via-cosmic-galaxy to-cosmic-cosmic bg-clip-text text-transparent animate-pulse">
-                Cosmic
-              </span>
-              <br />
-              <span className="bg-gradient-to-r from-cosmic-comet via-cosmic-sun to-cosmic-starlight bg-clip-text text-transparent">
-                Explorer
-              </span>
-            </h1>
-            <div className="text-xl md:text-2xl text-cosmic-cosmic/90 font-light tracking-wide">
-              Journey Through the Digital Universe
-            </div>
+      <div className="container mx-auto px-4 py-8 max-w-6xl">
+        {/* Header */}
+        <header className="text-center mb-12">
+          <div className="flex items-center justify-center gap-4 mb-6">
+            <span className="text-4xl" role="img" aria-label="Accessibility symbol">♿</span>
+            <span className="text-4xl" role="img" aria-label="Computer">💻</span>
+            <span className="text-4xl" role="img" aria-label="Speech bubble">💬</span>
           </div>
-
-          {/* Subtitle */}
-          <p className="text-xl md:text-2xl text-cosmic-moon/80 mb-8 leading-relaxed max-w-4xl mx-auto">
-            Embark on an interstellar adventure through code, creativity, and cosmic innovation. 
-            Explore the infinite possibilities of the digital cosmos.
+          
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+            <span className={highContrast ? "text-yellow-300" : "text-blue-600"}>
+              Accessible Coding 
+            </span>
+            <br />
+            <span className={highContrast ? "text-yellow-200" : "text-gray-700"}>
+              Website
+            </span>
+          </h1>
+          
+          <p className="text-xl md:text-2xl mb-8 leading-relaxed max-w-4xl mx-auto">
+            Helping visually impaired developers code with ease through voice guidance, 
+            high contrast interfaces, and intelligent code assistance.
           </p>
 
-          {/* Cosmic Divider */}
-          <div className="flex items-center justify-center mb-12">
-            <div className="h-1 w-20 bg-gradient-to-r from-transparent via-cosmic-comet to-transparent rounded-full"></div>
-            <div className="mx-6 relative">
-              <div className="w-12 h-12 bg-gradient-to-br from-cosmic-plasma to-cosmic-aurora rounded-full flex items-center justify-center border-2 border-cosmic-starlight/30">
-                <div className="w-6 h-6 bg-cosmic-sun rounded-full animate-pulse"></div>
+          {/* Accessibility Controls */}
+          <Card className={`p-6 mb-8 ${cardThemeClasses}`}>
+            <h2 className="text-xl font-semibold mb-4">Quick Accessibility Settings</h2>
+            <div className="flex flex-wrap gap-4 items-center justify-center">
+              <div className="flex items-center gap-2">
+                <span>Font Size:</span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setFontSize(prev => Math.max(prev - 2, 14))}
+                  aria-label="Decrease font size"
+                  className={buttonThemeClasses}
+                >
+                  A-
+                </Button>
+                <span className="px-2 font-mono">{fontSize}px</span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setFontSize(prev => Math.min(prev + 2, 32))}
+                  aria-label="Increase font size"
+                  className={buttonThemeClasses}
+                >
+                  A+
+                </Button>
               </div>
-              <div className="absolute -inset-2 bg-cosmic-starlight/20 rounded-full blur-md animate-pulse"></div>
-            </div>
-            <div className="h-1 w-20 bg-gradient-to-r from-transparent via-cosmic-aurora to-transparent rounded-full"></div>
-          </div>
-
-          {/* Cosmic Features */}
-          <div className="grid md:grid-cols-3 gap-8 mb-12">
-            <div className="bg-cosmic-void/60 backdrop-blur-lg rounded-3xl p-8 border border-cosmic-aurora/30 hover:border-cosmic-starlight/60 hover:shadow-2xl hover:shadow-cosmic-aurora/20 transition-all duration-500 group relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-cosmic-aurora/10 to-cosmic-plasma/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="relative z-10">
-                <div className="w-20 h-20 bg-gradient-to-br from-cosmic-starlight to-cosmic-galaxy rounded-2xl mx-auto mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-cosmic-aurora/30">
-                  <span className="text-white text-3xl">🌟</span>
-                </div>
-                <h3 className="text-2xl font-semibold text-cosmic-moon mb-4">Stellar Innovation</h3>
-                <p className="text-cosmic-cosmic/80 leading-relaxed">Harness the power of cosmic creativity to build extraordinary digital experiences</p>
-              </div>
-            </div>
-
-            <div className="bg-cosmic-void/60 backdrop-blur-lg rounded-3xl p-8 border border-cosmic-plasma/30 hover:border-cosmic-galaxy/60 hover:shadow-2xl hover:shadow-cosmic-plasma/20 transition-all duration-500 group relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-cosmic-plasma/10 to-cosmic-galaxy/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="relative z-10">
-                <div className="w-20 h-20 bg-gradient-to-br from-cosmic-galaxy to-cosmic-cosmic rounded-2xl mx-auto mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-cosmic-plasma/30">
-                  <span className="text-white text-3xl">🛸</span>
-                </div>
-                <h3 className="text-2xl font-semibold text-cosmic-moon mb-4">Galactic Tools</h3>
-                <p className="text-cosmic-cosmic/80 leading-relaxed">Advanced development environments designed for interstellar collaboration</p>
-              </div>
-            </div>
-
-            <div className="bg-cosmic-void/60 backdrop-blur-lg rounded-3xl p-8 border border-cosmic-comet/30 hover:border-cosmic-sun/60 hover:shadow-2xl hover:shadow-cosmic-comet/20 transition-all duration-500 group relative overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-cosmic-comet/10 to-cosmic-sun/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="relative z-10">
-                <div className="w-20 h-20 bg-gradient-to-br from-cosmic-comet to-cosmic-sun rounded-2xl mx-auto mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-cosmic-comet/30">
-                  <span className="text-white text-3xl">🌠</span>
-                </div>
-                <h3 className="text-2xl font-semibold text-cosmic-moon mb-4">Cosmic Exploration</h3>
-                <p className="text-cosmic-cosmic/80 leading-relaxed">Journey through infinite possibilities with cutting-edge technology</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Call to Action */}
-          <div className="space-y-4 sm:space-y-0 sm:space-x-6 sm:flex justify-center">
-            <Link to="/editor">
-              <Button className="bg-gradient-to-r from-cosmic-plasma to-cosmic-aurora hover:from-cosmic-starlight hover:to-cosmic-galaxy text-white font-semibold py-4 px-10 rounded-full text-lg shadow-2xl shadow-cosmic-plasma/50 hover:shadow-cosmic-aurora/60 transition-all duration-500 border border-cosmic-starlight/30 backdrop-blur-sm group">
-                <span className="mr-3 group-hover:animate-bounce">🚀</span>
-                Launch Explorer
+              <Button
+                variant="outline"
+                onClick={() => setHighContrast(prev => !prev)}
+                aria-label={`${highContrast ? 'Disable' : 'Enable'} high contrast mode`}
+                className={buttonThemeClasses}
+              >
+                {highContrast ? '🌞' : '🌙'} High Contrast
               </Button>
-            </Link>
-            <Button 
-              variant="outline" 
-              className="border-2 border-cosmic-comet/60 text-cosmic-comet hover:bg-cosmic-comet/10 hover:border-cosmic-comet hover:text-cosmic-sun font-semibold py-4 px-10 rounded-full text-lg backdrop-blur-sm transition-all duration-300 shadow-lg shadow-cosmic-comet/20"
-            >
-              <span className="mr-3">🌌</span>
-              Discover Universe
-            </Button>
+            </div>
+          </Card>
+        </header>
+
+        <main id="main-content">
+          {/* Main Toolbar */}
+          <section className="mb-12">
+            <h2 className="text-2xl font-bold mb-6 text-center">Main Tools</h2>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <Card className={`p-6 ${cardThemeClasses} hover:shadow-lg transition-shadow`}>
+                <div className="text-center">
+                  <div className="text-4xl mb-4" role="img" aria-label="Upload code">📁</div>
+                  <h3 className="text-xl font-semibold mb-3">Upload Code</h3>
+                  <p className="mb-4">Upload or paste your code files for analysis and voice reading</p>
+                  <Link to="/editor">
+                    <Button className={`w-full text-lg py-3 ${buttonThemeClasses}`}>
+                      Get Started
+                    </Button>
+                  </Link>
+                </div>
+              </Card>
+
+              <Card className={`p-6 ${cardThemeClasses} hover:shadow-lg transition-shadow`}>
+                <div className="text-center">
+                  <div className="text-4xl mb-4" role="img" aria-label="Read code aloud">🔊</div>
+                  <h3 className="text-xl font-semibold mb-3">Read Code</h3>
+                  <p className="mb-4">Listen to your code being read aloud with smart pronunciation</p>
+                  <Link to="/editor">
+                    <Button className={`w-full text-lg py-3 ${buttonThemeClasses}`}>
+                      Read Code
+                    </Button>
+                  </Link>
+                </div>
+              </Card>
+
+              <Card className={`p-6 ${cardThemeClasses} hover:shadow-lg transition-shadow`}>
+                <div className="text-center">
+                  <div className="text-4xl mb-4" role="img" aria-label="Explain code">💡</div>
+                  <h3 className="text-xl font-semibold mb-3">Explain Code</h3>
+                  <p className="mb-4">Get plain-language explanations of code structure and logic</p>
+                  <Link to="/editor">
+                    <Button className={`w-full text-lg py-3 ${buttonThemeClasses}`}>
+                      Explain Code
+                    </Button>
+                  </Link>
+                </div>
+              </Card>
+
+              <Card className={`p-6 ${cardThemeClasses} hover:shadow-lg transition-shadow`}>
+                <div className="text-center">
+                  <div className="text-4xl mb-4" role="img" aria-label="Check errors">🔍</div>
+                  <h3 className="text-xl font-semibold mb-3">Check Errors</h3>
+                  <p className="mb-4">Find and hear about syntax errors and potential issues</p>
+                  <Link to="/editor">
+                    <Button className={`w-full text-lg py-3 ${buttonThemeClasses}`}>
+                      Check Errors
+                    </Button>
+                  </Link>
+                </div>
+              </Card>
+            </div>
+          </section>
+
+          {/* Features Section */}
+          <section className="mb-12">
+            <h2 className="text-2xl font-bold mb-6 text-center">Accessibility Features</h2>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <Card className={`p-6 ${cardThemeClasses}`}>
+                <div className="flex items-start gap-4">
+                  <span className="text-3xl" role="img" aria-label="Voice">🎤</span>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">Voice Navigation</h3>
+                    <p>Control the interface with voice commands like "read next line" or "explain function"</p>
+                  </div>
+                </div>
+              </Card>
+
+              <Card className={`p-6 ${cardThemeClasses}`}>
+                <div className="flex items-start gap-4">
+                  <span className="text-3xl" role="img" aria-label="High contrast">🌓</span>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">High Contrast Mode</h3>
+                    <p>Switch to high contrast themes for better visibility and reduced eye strain</p>
+                  </div>
+                </div>
+              </Card>
+
+              <Card className={`p-6 ${cardThemeClasses}`}>
+                <div className="flex items-start gap-4">
+                  <span className="text-3xl" role="img" aria-label="Large text">🔤</span>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">Adjustable Font Size</h3>
+                    <p>Increase text size for better readability, with support for very large fonts</p>
+                  </div>
+                </div>
+              </Card>
+
+              <Card className={`p-6 ${cardThemeClasses}`}>
+                <div className="flex items-start gap-4">
+                  <span className="text-3xl" role="img" aria-label="Keyboard">⌨️</span>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">Keyboard Navigation</h3>
+                    <p>Full keyboard support with logical tab order and customizable shortcuts</p>
+                  </div>
+                </div>
+              </Card>
+
+              <Card className={`p-6 ${cardThemeClasses}`}>
+                <div className="flex items-start gap-4">
+                  <span className="text-3xl" role="img" aria-label="Screen reader">📖</span>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">Screen Reader Friendly</h3>
+                    <p>Optimized for NVDA, JAWS, VoiceOver and other assistive technologies</p>
+                  </div>
+                </div>
+              </Card>
+
+              <Card className={`p-6 ${cardThemeClasses}`}>
+                <div className="flex items-start gap-4">
+                  <span className="text-3xl" role="img" aria-label="Error detection">⚠️</span>
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">Audio Error Alerts</h3>
+                    <p>Hear about syntax errors and code issues with clear, spoken explanations</p>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </section>
+
+          {/* Keyboard Shortcuts Help */}
+          <section>
+            <Card className={`p-6 ${cardThemeClasses}`}>
+              <h2 className="text-xl font-semibold mb-4">Keyboard Shortcuts</h2>
+              <div className="grid md:grid-cols-2 gap-4 text-sm">
+                <div>
+                  <h3 className="font-medium mb-2">Font Size</h3>
+                  <ul className="space-y-1">
+                    <li>• <kbd className="px-2 py-1 bg-gray-200 rounded text-black">Ctrl/Cmd + =</kbd> Increase font size</li>
+                    <li>• <kbd className="px-2 py-1 bg-gray-200 rounded text-black">Ctrl/Cmd + -</kbd> Decrease font size</li>
+                  </ul>
+                </div>
+                <div>
+                  <h3 className="font-medium mb-2">Accessibility</h3>
+                  <ul className="space-y-1">
+                    <li>• <kbd className="px-2 py-1 bg-gray-200 rounded text-black">Alt + H</kbd> Toggle high contrast</li>
+                    <li>• <kbd className="px-2 py-1 bg-gray-200 rounded text-black">Tab</kbd> Navigate between elements</li>
+                  </ul>
+                </div>
+              </div>
+            </Card>
+          </section>
+        </main>
+
+        {/* Footer */}
+        <footer className="mt-16 text-center">
+          <div className={`border-t pt-8 ${highContrast ? 'border-yellow-600' : 'border-gray-300'}`}>
+            <p className="mb-4">
+              Built with accessibility in mind for the visually impaired developer community
+            </p>
+            <div className="flex justify-center gap-6 text-sm">
+              <a href="#accessibility" className={`hover:underline ${highContrast ? 'text-yellow-200' : 'text-blue-600'}`}>
+                Accessibility Guide
+              </a>
+              <a href="#contact" className={`hover:underline ${highContrast ? 'text-yellow-200' : 'text-blue-600'}`}>
+                Contact Support
+              </a>
+              <a href="#help" className={`hover:underline ${highContrast ? 'text-yellow-200' : 'text-blue-600'}`}>
+                Help & Documentation
+              </a>
+            </div>
           </div>
-
-          {/* Cosmic Stats */}
-          <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="text-center group">
-              <div className="text-3xl md:text-4xl font-bold text-cosmic-starlight mb-2 group-hover:text-cosmic-galaxy transition-colors">∞</div>
-              <div className="text-cosmic-cosmic/70 text-sm tracking-wide">Galaxies</div>
-            </div>
-            <div className="text-center group">
-              <div className="text-3xl md:text-4xl font-bold text-cosmic-aurora mb-2 group-hover:text-cosmic-plasma transition-colors">42</div>
-              <div className="text-cosmic-cosmic/70 text-sm tracking-wide">Light Years</div>
-            </div>
-            <div className="text-center group">
-              <div className="text-3xl md:text-4xl font-bold text-cosmic-comet mb-2 group-hover:text-cosmic-sun transition-colors">7.8B</div>
-              <div className="text-cosmic-cosmic/70 text-sm tracking-wide">Star Systems</div>
-            </div>
-            <div className="text-center group">
-              <div className="text-3xl md:text-4xl font-bold text-cosmic-galaxy mb-2 group-hover:text-cosmic-cosmic transition-colors">1</div>
-              <div className="text-cosmic-cosmic/70 text-sm tracking-wide">Universe</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom cosmic glow */}
-        <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-cosmic-nebula/30 to-transparent"></div>
-      </div>
-
-      {/* Floating cosmic elements */}
-      <div className="absolute top-1/4 left-8 animate-float">
-        <div className="w-4 h-4 bg-cosmic-starlight rounded-full shadow-lg shadow-cosmic-starlight/50"></div>
-      </div>
-      <div className="absolute top-1/3 right-12 animate-float" style={{ animationDelay: '2s' }}>
-        <div className="w-3 h-3 bg-cosmic-comet rounded-full shadow-lg shadow-cosmic-comet/50"></div>
-      </div>
-      <div className="absolute bottom-1/4 left-1/3 animate-float" style={{ animationDelay: '1s' }}>
-        <div className="w-5 h-5 bg-cosmic-aurora rounded-full shadow-lg shadow-cosmic-aurora/50"></div>
-      </div>
-      <div className="absolute bottom-1/4 right-1/4 animate-pulse">
-        <div className="text-cosmic-galaxy text-sm opacity-60">✨</div>
-      </div>
-
-      {/* Shooting star */}
-      <div className="absolute top-1/4 left-0 w-full h-1">
-        <div className="w-20 h-0.5 bg-gradient-to-r from-transparent via-cosmic-sun to-transparent animate-pulse opacity-60"></div>
+        </footer>
       </div>
     </div>
   );
