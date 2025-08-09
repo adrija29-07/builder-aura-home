@@ -6,6 +6,7 @@ import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState, useRef, useEffect } from "react";
 import { CodeAnalysisResponse } from "@shared/api";
+import "../types/speech";
 
 interface TTSSettings {
   rate: number;
