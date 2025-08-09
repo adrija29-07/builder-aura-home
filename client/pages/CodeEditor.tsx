@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState, useRef, useEffect } from "react";
+import { CodeAnalysisResponse } from "@shared/api";
 
 interface TTSSettings {
   rate: number;
@@ -30,6 +31,9 @@ export default function CodeEditor() {
   });
   const [isListening, setIsListening] = useState(false);
   const [lastSpokenText, setLastSpokenText] = useState("");
+  const [codeAnalysis, setCodeAnalysis] = useState<CodeAnalysisResponse | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [language, setLanguage] = useState("javascript");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -258,68 +262,80 @@ export default function CodeEditor() {
     }
   };
 
-  // Code analysis functions
-  const explainCode = () => {
+  // Enhanced code analysis with backend API
+  const analyzeCodeWithAPI = async () => {
     if (!code.trim()) {
-      speak("No code to explain. Please enter or upload some code first.");
+      speak("No code to analyze. Please enter or upload some code first.");
       return;
     }
 
-    // Basic code structure analysis
-    const lines = code.split('\n').filter(line => line.trim() !== '');
-    let explanation = `This code has ${lines.length} non-empty lines. `;
+    setIsAnalyzing(true);
+    try {
+      const response = await fetch('/api/code-analysis', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code, language }),
+      });
 
-    // Check for common patterns
-    const functions = code.match(/function\s+\w+|def\s+\w+|const\s+\w+\s*=|let\s+\w+\s*=|var\s+\w+\s*=/g);
-    if (functions && functions.length > 0) {
-      explanation += `It contains ${functions.length} function or variable declaration${functions.length > 1 ? 's' : ''}. `;
+      if (!response.ok) {
+        throw new Error('Failed to analyze code');
+      }
+
+      const analysis: CodeAnalysisResponse = await response.json();
+      setCodeAnalysis(analysis);
+      return analysis;
+    } catch (error) {
+      console.error('Code analysis error:', error);
+      speak("Sorry, I couldn't analyze the code. Please try again.");
+      return null;
+    } finally {
+      setIsAnalyzing(false);
     }
-
-    const loops = code.match(/for\s*\(|while\s*\(|for\s+\w+\s+in/g);
-    if (loops && loops.length > 0) {
-      explanation += `There are ${loops.length} loop${loops.length > 1 ? 's' : ''}. `;
-    }
-
-    const conditionals = code.match(/if\s*\(|else\s*if\s*\(|else\s*\{/g);
-    if (conditionals && conditionals.length > 0) {
-      explanation += `The code includes ${conditionals.length} conditional statement${conditionals.length > 1 ? 's' : ''}. `;
-    }
-
-    speak(explanation || "I can analyze the basic structure of the code for you.");
   };
 
-  const checkErrors = () => {
-    if (!code.trim()) {
-      speak("No code to check. Please enter or upload some code first.");
-      return;
+  // Code analysis functions
+  const explainCode = async () => {
+    const analysis = await analyzeCodeWithAPI();
+    if (analysis) {
+      const explanation = analysis.readableExplanation;
+      speak(explanation);
+
+      // Provide more detailed explanation if requested
+      setTimeout(() => {
+        if (analysis.structure.functions.length > 0) {
+          const functionDetails = analysis.structure.functions
+            .map(f => `Function ${f.name} on line ${f.line}`)
+            .join(', ');
+          speak(`Functions found: ${functionDetails}`);
+        }
+
+        if (analysis.errors.length > 0) {
+          speak(`I also found ${analysis.errors.length} potential issue${analysis.errors.length > 1 ? 's' : ''}.`);
+        }
+      }, 3000);
     }
+  };
 
-    // Basic syntax checking
-    const lines = code.split('\n');
-    const errors: string[] = [];
+  const checkErrors = async () => {
+    const analysis = await analyzeCodeWithAPI();
+    if (analysis) {
+      if (analysis.errors.length > 0) {
+        const errorSummary = `Found ${analysis.errors.length} potential error${analysis.errors.length > 1 ? 's' : ''}.`;
+        speak(errorSummary);
 
-    lines.forEach((line, index) => {
-      const trimmedLine = line.trim();
-      if (trimmedLine === '') return;
+        // Read first few errors in detail
+        const detailedErrors = analysis.errors.slice(0, 3).map(error =>
+          `Line ${error.line}: ${error.message}`
+        ).join('. ');
 
-      // Check for common syntax issues
-      const openBraces = (line.match(/\{/g) || []).length;
-      const closeBraces = (line.match(/\}/g) || []).length;
-      const openParens = (line.match(/\(/g) || []).length;
-      const closeParens = (line.match(/\)/g) || []).length;
-
-      if (openBraces !== closeBraces) {
-        errors.push(`Line ${index + 1}: Mismatched braces`);
+        setTimeout(() => {
+          speak(detailedErrors);
+        }, 2000);
+      } else {
+        speak("No syntax errors detected in the code. Great job!");
       }
-      if (openParens !== closeParens) {
-        errors.push(`Line ${index + 1}: Mismatched parentheses`);
-      }
-    });
-
-    if (errors.length > 0) {
-      speak(`Found ${errors.length} potential error${errors.length > 1 ? 's' : ''}: ${errors.join(', ')}`);
-    } else {
-      speak("No obvious syntax errors detected in the code.");
     }
   };
 
