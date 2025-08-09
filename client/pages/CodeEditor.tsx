@@ -979,12 +979,12 @@ export default function CodeEditor() {
                   onClick={pasteFromClipboard}
                   variant="outline"
                   className={`w-full ${buttonThemeClasses}`}
-                  aria-label="Paste code from clipboard"
+                  aria-label="Paste code from clipboard or focus editor for manual paste"
                 >
                   📋 Paste Code
                 </Button>
                 <p className={`text-xs mt-1 ${highContrast ? 'text-yellow-100' : 'text-gray-500'}`}>
-                  Paste code from your clipboard
+                  Paste from clipboard or use Ctrl+V in editor
                 </p>
               </div>
 
