@@ -910,7 +910,7 @@ export default function CodeEditor() {
               aria-label={`${highContrast ? 'Disable' : 'Enable'} high contrast mode`}
               className={buttonThemeClasses}
             >
-              {highContrast ? '🌞' : '🌙'} High Contrast
+              {highContrast ? '���' : '🌙'} High Contrast
             </Button>
           </div>
           
@@ -929,6 +929,9 @@ export default function CodeEditor() {
               <div>• <kbd className="px-1 py-0.5 bg-gray-200 rounded text-black text-xs">Alt + E</kbd> Explain code</div>
               <div>• <kbd className="px-1 py-0.5 bg-gray-200 rounded text-black text-xs">Alt + C</kbd> Check errors</div>
               <div>• <kbd className="px-1 py-0.5 bg-gray-200 rounded text-black text-xs">Alt + D</kbd> Toggle dictation</div>
+              <div>• <kbd className="px-1 py-0.5 bg-gray-200 rounded text-black text-xs">Ctrl/Cmd + A</kbd> Select all text</div>
+              <div>• <kbd className="px-1 py-0.5 bg-gray-200 rounded text-black text-xs">Ctrl/Cmd + C</kbd> Copy selected text</div>
+              <div>• <kbd className="px-1 py-0.5 bg-gray-200 rounded text-black text-xs">Ctrl/Cmd + V</kbd> Paste from clipboard</div>
             </div>
           </details>
         </Card>
