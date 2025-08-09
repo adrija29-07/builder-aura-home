@@ -576,13 +576,26 @@ export default function CodeEditor() {
 
   const pasteFromClipboard = async () => {
     try {
+      // Check if clipboard API is available
+      if (!navigator.clipboard) {
+        speak("Clipboard API not available. Please paste manually with Ctrl+V in the code editor.");
+        textareaRef.current?.focus();
+        return;
+      }
+
       const text = await navigator.clipboard.readText();
-      setCode(text);
-      textareaRef.current?.focus();
-      speak(`Code pasted from clipboard. ${text.split('\n').length} lines of code.`);
+      if (text.trim()) {
+        setCode(text);
+        textareaRef.current?.focus();
+        speak(`Code pasted from clipboard. ${text.split('\n').length} lines of code.`);
+      } else {
+        speak("Clipboard is empty. Nothing to paste.");
+      }
     } catch (err) {
       console.error('Failed to read clipboard contents: ', err);
-      speak("Failed to paste from clipboard. Please try again.");
+      // Focus the textarea so user can paste manually
+      textareaRef.current?.focus();
+      speak("Clipboard access is restricted. Please paste manually with Ctrl+V or Cmd+V in the code editor.");
     }
   };
 
