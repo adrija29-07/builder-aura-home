@@ -104,3 +104,52 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+
+  @keyframes twinkle {
+    0%, 100% {
+      opacity: 0.3;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.2);
+    }
+  }
+
+  @keyframes cosmic-drift {
+    0% {
+      transform: translateX(-10px) translateY(-10px);
+    }
+    33% {
+      transform: translateX(10px) translateY(-5px);
+    }
+    66% {
+      transform: translateX(-5px) translateY(10px);
+    }
+    100% {
+      transform: translateX(-10px) translateY(-10px);
+    }
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-twinkle {
+    animation: twinkle 3s ease-in-out infinite;
+  }
+
+  .animate-cosmic-drift {
+    animation: cosmic-drift 15s ease-in-out infinite;
+  }
+}
