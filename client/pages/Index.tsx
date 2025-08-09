@@ -113,12 +113,14 @@ export default function Index() {
 
           {/* Call to Action */}
           <div className="space-y-4 sm:space-y-0 sm:space-x-4 sm:flex justify-center">
-            <Button className="bg-gradient-to-r from-tech-neon to-tech-electric hover:from-tech-neon/90 hover:to-tech-electric/90 text-white font-semibold py-3 px-8 rounded-full text-lg shadow-lg hover:shadow-tech-neon/50 transition-all duration-300 border border-tech-neon/30">
-              <span className="mr-2">⚡</span>
-              Join the Hackathon
-            </Button>
-            <Button 
-              variant="outline" 
+            <Link to="/editor">
+              <Button className="bg-gradient-to-r from-tech-neon to-tech-electric hover:from-tech-neon/90 hover:to-tech-electric/90 text-white font-semibold py-3 px-8 rounded-full text-lg shadow-lg hover:shadow-tech-neon/50 transition-all duration-300 border border-tech-neon/30">
+                <span className="mr-2">💻</span>
+                Try Code Editor
+              </Button>
+            </Link>
+            <Button
+              variant="outline"
               className="border-2 border-durga-gold text-durga-gold hover:bg-durga-gold/10 hover:border-durga-gold/80 font-semibold py-3 px-8 rounded-full text-lg backdrop-blur-sm"
             >
               <span className="mr-2">🕉️</span>
